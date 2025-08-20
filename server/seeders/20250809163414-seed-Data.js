@@ -16,7 +16,6 @@ module.exports = {
     */
 
     const usersData = require('../data/users.json')
-    const reminderssData = require('../data/reminders.json')
     const friendsData = require('../data/friends.json')
 
     const insertDataUsers = usersData.map((ud) => {
@@ -32,19 +31,6 @@ module.exports = {
     });
 
     await queryInterface.bulkInsert('Users', insertDataUsers);
-
-
-    const insertDataReminders = reminderssData.map((rd) => {
-      const { id, ...rest } = rd;
-      return {
-        ...rest,
-        createdAt: new Date(),
-        updatedAt: new Date()
-      };
-    });
-
-    await queryInterface.bulkInsert('Reminders', insertDataReminders);
-
 
     const insertDataFriends = friendsData.map((fd) => {
       const { id, ...rest } = fd;
@@ -68,12 +54,6 @@ module.exports = {
      * await queryInterface.bulkDelete('People', null, {});
      */
     await queryInterface.bulkDelete('Friends', null, {
-      truncate: true,
-      restartIdentity: true,
-      cascade: true
-    })
-
-    await queryInterface.bulkDelete('Reminders', null, {
       truncate: true,
       restartIdentity: true,
       cascade: true
