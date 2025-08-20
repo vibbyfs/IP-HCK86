@@ -1,0 +1,72 @@
+[
+  {
+    "id": 1,
+    "username": "vibbyfs",
+    "phone": "+6281324985365",
+    "email": "vibbyfs@mail.com",
+    "password": "password",
+    "timezone": "Asia/Jakarta",
+    "createdAt": "2025-08-09T14:00:00Z",
+    "updatedAt": "2025-08-09T14:00:00Z"
+  },
+  {
+    "id": 2,
+    "username": "dimas",
+    "phone": "+6287713371997",
+    "email": "dimas@mail.com",
+    "password": "password",
+    "timezone": "Asia/Jakarta",
+    "createdAt": "2025-08-09T14:05:00Z",
+    "updatedAt": "2025-08-09T14:05:00Z"
+  },
+  {
+    "id": 3,
+    "username": "andi",
+    "phone": "+628980969666",
+    "email": "neubri@mail.com",
+    "password": "password",
+    "timezone": "Asia/Jakarta",
+    "createdAt": "2025-08-09T14:05:00Z",
+    "updatedAt": "2025-08-09T14:05:00Z"
+  },
+  {
+    "id": 4,
+    "username": "syukur",
+    "phone": "+6281290876968",
+    "email": "syukur@mail.com",
+    "password": "password",
+    "timezone": "Asia/Jakarta",
+    "createdAt": "2025-08-09T14:05:00Z",
+    "updatedAt": "2025-08-09T14:05:00Z"
+  },
+  {
+    "id": 5,
+    "username": "andien",
+    "phone": "+628981976777",
+    "email": "andien@mail.com",
+    "password": "password",
+    "timezone": "Asia/Jakarta",
+    "createdAt": "2025-08-09T14:05:00Z",
+    "updatedAt": "2025-08-09T14:05:00Z"
+  },
+  {
+    "id": 6,
+    "username": "riri",
+    "phone": "+6287777798787",
+    "email": "riri@mail.com",
+    "password": "password",
+    "timezone": "Asia/Jakarta",
+    "createdAt": "2025-08-09T14:05:00Z",
+    "updatedAt": "2025-08-09T14:05:00Z"
+  },
+  {
+    "id": 7,
+    "username": "haritzh",
+    "phone": "+6285694881267",
+    "email": "haritzh@mail.com",
+    "password": "password",
+    "timezone": "Asia/Jakarta",
+    "createdAt": "2025-08-09T14:05:00Z",
+    "updatedAt": "2025-08-09T14:05:00Z"
+  }
+]
