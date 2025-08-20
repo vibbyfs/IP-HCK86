@@ -11,6 +11,7 @@ import {
 } from "@tabler/icons-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import http from "../../lib/http";
+import { showSuccess, showError } from "../../utils/toastNotifications";
 import { formatToWIBFull } from "../../utils/time";
 
 export default function FriendsCMSPage() {
@@ -24,8 +25,6 @@ export default function FriendsCMSPage() {
   const [username, setUsername] = useState("");
   const [busyInvite, setBusyInvite] = useState(false);
 
-  // busy per row
-
   const controllerRef = useRef(null);
 
   async function fetchFriends() {
@@ -36,18 +35,22 @@ export default function FriendsCMSPage() {
           Authorization: `Bearer ${localStorage.getItem("access_token")}`,
         },
       });
+
       setRows(response.data);
     } catch (err) {
       console.log("ERROR FRIENDS PAGE FETCH", err);
+      showError(err, "Gagal memuat teman");
     }
   }
 
   // dedupe friends by otherUser.id (hindari dobel username saat relasi 2 arah)
   const friendsAll = useMemo(() => {
     const map = new Map();
+
     for (const f of rows) {
       if (f.status !== "accepted" || !f.otherUser) continue;
       const key = String(f.otherUser.id);
+
       if (!map.has(key)) map.set(key, f);
       else {
         // keep the most recent
@@ -70,6 +73,7 @@ export default function FriendsCMSPage() {
       f.otherUser?.dueAt,
       f.createdAt,
     ];
+
     for (const c of candidates) {
       if (c) {
         const d = new Date(c);
@@ -82,9 +86,11 @@ export default function FriendsCMSPage() {
   // sorted version (by resolved date) using `sort` state (ASC = oldest first)
   const friendsSorted = useMemo(() => {
     const copy = [...friendsAll];
+
     copy.sort((a, b) => {
       const da = resolveFriendDate(a);
       const db = resolveFriendDate(b);
+
       if (da === db) return 0;
       return sort === "ASC" ? da - db : db - da;
     });
@@ -96,30 +102,22 @@ export default function FriendsCMSPage() {
       rows.filter((r) => r.direction === "incoming" && r.status === "pending"),
     [rows]
   );
+
   const outgoingPending = useMemo(
     () =>
       rows.filter((r) => r.direction === "outgoing" && r.status === "pending"),
     [rows]
   );
 
-  // const fmt = (iso) => {
-  //   if (!iso) return "-";
-  //   try {
-  //     return new Intl.DateTimeFormat("id-ID", {
-  //       dateStyle: "medium",
-  //       timeStyle: "short",
-  //     }).format(new Date(iso));
-  //   } catch {
-  //     return String(iso);
-  //   }
-  // };
-
   // actions
   async function handleInvite(e) {
     e?.preventDefault?.();
+
     const clean = username.trim();
+
     if (!clean) return;
     setBusyInvite(true);
+
     try {
       await http.post(
         "/friends/request",
@@ -130,13 +128,16 @@ export default function FriendsCMSPage() {
           },
         }
       );
+
       setUsername("");
       await fetchFriends();
+      showSuccess("Undangan terkirim");
     } catch (err) {
       console.log(
         "ERROR PAGE FRIENNDS HANDLE INVITE",
         err?.response?.data || err?.message || err
       );
+      showError(err, "Gagal mengirim undangan");
     } finally {
       setBusyInvite(false);
     }
@@ -144,6 +145,7 @@ export default function FriendsCMSPage() {
 
   async function handleRespond(e, id, action) {
     e.preventDefault();
+
     try {
       await http.put(
         `/friends/${id}/respond`,
@@ -154,9 +156,14 @@ export default function FriendsCMSPage() {
           },
         }
       );
+
       await fetchFriends();
+      showSuccess(
+        action === "accept" ? "Undangan diterima" : "Undangan ditolak"
+      );
     } catch (err) {
       console.log("ERROR PAGE FRIENNDS HANDLE RESPON", err);
+      showError(err, "Gagal memproses respon undangan");
     }
   }
 
@@ -167,14 +174,18 @@ export default function FriendsCMSPage() {
           Authorization: `Bearer ${localStorage.getItem("access_token")}`,
         },
       });
+
       setRows((prev) => prev.filter((r) => r.id !== id));
+      showSuccess("Teman dihapus");
     } catch (err) {
       console.log("ERROR PAGE FRIENDS HANDLE DELETE", err);
+      showError(err, "Gagal menghapus teman");
     }
   }
   useEffect(() => {
     fetchFriends();
   }, []);
+  
   return (
     <>
       <div className="min-h-screen bg-neutral-50 text-neutral-800">
@@ -207,12 +218,11 @@ export default function FriendsCMSPage() {
               </div>
               <div className="mt-4 flex flex-wrap items-center gap-3 text-xs text-neutral-600">
                 <span className="inline-flex items-center gap-1">
-                  <IconShieldCheck className="h-4 w-4 text-green-700" /> List Friends
-                  
+                  <IconShieldCheck className="h-4 w-4 text-green-700" /> List
+                  Friends
                 </span>
                 <span className="inline-flex items-center gap-1">
                   <IconMessage className="h-4 w-4 text-green-700" /> Request
-                  
                 </span>
               </div>
             </section>
@@ -253,7 +263,9 @@ export default function FriendsCMSPage() {
                         <th className="px-3 py-2 font-medium">Username</th>
                         <th className="px-3 py-2 font-medium">Status</th>
                         <th className="px-3 py-2 font-medium">Dibuat</th>
-                        <th className="px-3 py-2 font-medium text-center">Aksi</th>
+                        <th className="px-3 py-2 font-medium text-center">
+                          Aksi
+                        </th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-neutral-200">

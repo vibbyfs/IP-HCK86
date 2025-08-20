@@ -5,6 +5,12 @@ import { cn } from "../../lib/cn";
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router";
 import http from "../../lib/http";
+import {
+  showLoading,
+  dismissToast,
+  showSuccess,
+  showError,
+} from "../../utils/toastNotifications";
 
 export default function LoginForm() {
   const navigate = useNavigate();
@@ -13,13 +19,16 @@ export default function LoginForm() {
   async function handleLogin(e) {
     e.preventDefault();
     try {
+      const toastId = showLoading("Masuk... Mengautentikasi");
       const res = await http.post("/auth/login", formData);
 
       localStorage.setItem("access_token", res.data.access_token);
-
+      dismissToast(toastId);
+      showSuccess("Berhasil masuk");
       navigate("/dashboards");
     } catch (err) {
       console.log("ERROR SUBMIT LOGIN", err);
+      showError(err, "Gagal masuk. Periksa email dan password Anda.");
     }
   }
 
@@ -27,6 +36,7 @@ export default function LoginForm() {
     console.log("Encoded JWT ID token: " + response.credential);
 
     try {
+      const toastId = showLoading("Masuk dengan Google...");
       const res = await http.post("/auth/login-google", {
         id_token: response.credential,
       });
@@ -35,10 +45,12 @@ export default function LoginForm() {
       if (res.data.user) {
         localStorage.setItem("UserId", res.data.user.id);
       }
-
+      dismissToast(toastId);
+      showSuccess("Masuk dengan Google berhasil");
       navigate("/dashboards/profiles");
     } catch (err) {
       console.log("ERROR LOGIN WITH GOOGLE", err);
+      showError(err, "Gagal login dengan Google");
     }
   }
 

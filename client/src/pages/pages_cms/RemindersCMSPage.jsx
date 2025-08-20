@@ -11,6 +11,7 @@ import {
 } from "@tabler/icons-react";
 import { useEffect, useMemo, useState } from "react";
 import http from "../../lib/http";
+import { showSuccess, showError } from "../../utils/toastNotifications";
 import { formatToWIBFull } from "../../utils/time";
 
 export default function RemindersCMSPage() {
@@ -31,6 +32,7 @@ export default function RemindersCMSPage() {
       setRows(response.data);
     } catch (err) {
       console.log("ERROR FETCHING REMINDERS", err);
+      showError(err, "Gagal memuat pengingat");
     }
   }
 
@@ -45,9 +47,12 @@ export default function RemindersCMSPage() {
           },
         }
       );
+
       await fetchReminders();
+      showSuccess("Reminder dibatalkan");
     } catch (err) {
       console.log("ERROR REMINDER CANCEL", err);
+      showError(err, "Gagal membatalkan reminder");
     }
   }
 
@@ -58,9 +63,12 @@ export default function RemindersCMSPage() {
           Authorization: `Bearer ${localStorage.getItem("access_token")}`,
         },
       });
+
       setRows((prev) => prev.filter((r) => r.id !== id));
+      showSuccess("Reminder dihapus");
     } catch (err) {
       console.log("ERROR FETCHING REMINDERS DELETE", err);
+      showError(err, "Gagal menghapus reminder");
     }
   }
 
@@ -276,24 +284,24 @@ export default function RemindersCMSPage() {
                         {formatToWIBFull(r.createdAt)}
                       </td>
                       <td className="px-3 py-2">
-                          <div className="flex items-center gap-2">
-                            <button
-                              onClick={() => handleCancelReminder(r.id)}
-                              aria-label="Cancel reminder"
-                              title="Cancel reminder"
-                              className="rounded-lg border border-red-300 bg-red-50 p-2 text-red-700 hover:bg-red-100 disabled:opacity-60 cursor-pointer"
-                            >
-                              <IconX className="h-4 w-4" />
-                            </button>
-                            <button
-                              onClick={() => handleDeleteReminder(r.id)}
-                              aria-label="Delete reminder"
-                              title="Delete reminder"
-                              className="rounded-lg border border-neutral-300 p-2 text-neutral-800 hover:bg-neutral-50 cursor-pointer"
-                            >
-                              <IconTrash className="h-4 w-4" />
-                            </button>
-                          </div>
+                        <div className="flex items-center gap-2">
+                          <button
+                            onClick={() => handleCancelReminder(r.id)}
+                            aria-label="Cancel reminder"
+                            title="Cancel reminder"
+                            className="rounded-lg border border-red-300 bg-red-50 p-2 text-red-700 hover:bg-red-100 disabled:opacity-60 cursor-pointer"
+                          >
+                            <IconX className="h-4 w-4" />
+                          </button>
+                          <button
+                            onClick={() => handleDeleteReminder(r.id)}
+                            aria-label="Delete reminder"
+                            title="Delete reminder"
+                            className="rounded-lg border border-neutral-300 p-2 text-neutral-800 hover:bg-neutral-50 cursor-pointer"
+                          >
+                            <IconTrash className="h-4 w-4" />
+                          </button>
+                        </div>
                       </td>
                     </tr>
                   ))}

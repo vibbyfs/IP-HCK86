@@ -5,12 +5,12 @@ import Sidebar from "./components/dashboards/SidebarCMS";
 import Topbar from "./components/dashboards/TopbarCMS";
 import FriendsCMSPage from "./pages/pages_cms/FriendsCMSPage";
 import ProfileCMSPage from "./pages/pages_cms/ProfileCMSPage";
-import Navbar from "./components/dashboards/Navbar";
 import FooterDashboard from "./components/dashboards/FooterCMS";
 import LoginPage from "./pages/pages_cms/LoginPage";
 import RegisterPage from "./pages/pages_cms/RegisterPage";
 import DashboardCMSPage from "./pages/pages_cms/DashboardCMSPage";
 import { NavbarSection } from "./components/publics/NavbarSection";
+import { Toaster } from "react-hot-toast";
 
 function MainLayout() {
   return (
@@ -40,6 +40,7 @@ function App() {
   return (
     <>
       <BrowserRouter>
+        <Toaster position="top-right" />
         <Routes>
           <Route path="/" element={<LandingPage />} />
           <Route element={<MainLayout />}>

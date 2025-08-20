@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const http = axios.create({
-    baseURL: "https://api-heyremindly.vibbyfs.web.id/api/"
+    baseURL: import.meta.env.VITE_LOCAL_PORT
 })
 
 export default http

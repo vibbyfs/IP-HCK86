@@ -6,6 +6,7 @@ import {
 } from "@tabler/icons-react";
 import { useEffect, useRef, useState } from "react";
 import http from "../../lib/http";
+import { showSuccess, showError } from "../../utils/toastNotifications";
 
 export default function ProfileCMSPage() {
   const [formData, setForm] = useState({
@@ -28,6 +29,7 @@ export default function ProfileCMSPage() {
         setProfile(response.data);
       } catch (err) {
         console.log("ERROR FETCH PROFILE", err);
+        showError(err, "Gagal memuat profil");
       }
     }
 
@@ -36,6 +38,7 @@ export default function ProfileCMSPage() {
 
   async function handleUpdateProfile(e) {
     e.preventDefault();
+
     try {
       const response = await http.put(
         `/users/${me.id}/update-profile`,
@@ -46,8 +49,11 @@ export default function ProfileCMSPage() {
           },
         }
       );
+      
+      showSuccess("Profil berhasil diperbarui");
     } catch (err) {
       console.log("ERROR FETCH PROFILE SAVE", err);
+      showError(err, "Gagal menyimpan profil");
     }
   }
 
