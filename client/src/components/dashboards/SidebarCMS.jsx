@@ -35,7 +35,7 @@ export default function SidebarCMS() {
     },
     {
       label: "Profil",
-      href: "/dashboards/profiles",
+      href: "/dashboards/profile",
       icon: <IconEdit className="h-4 w-4" />,
     },
   ];

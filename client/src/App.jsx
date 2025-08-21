@@ -9,6 +9,7 @@ import FooterDashboard from "./components/dashboards/FooterCMS";
 import LoginPage from "./pages/pages_cms/LoginPage";
 import RegisterPage from "./pages/pages_cms/RegisterPage";
 import DashboardCMSPage from "./pages/pages_cms/DashboardCMSPage";
+import UpdateProfileCMSPage from "./pages/pages_cms/UpdateProfileCMSPage";
 import { NavbarSection } from "./components/publics/NavbarSection";
 import { Toaster } from "react-hot-toast";
 
@@ -54,7 +55,8 @@ function App() {
               element={<RemindersCMSPage />}
             />
             <Route path="/dashboards/friends" element={<FriendsCMSPage />} />
-            <Route path="/dashboards/profiles" element={<ProfileCMSPage />} />
+            <Route path="/dashboards/profile" element={<ProfileCMSPage />} />
+            <Route path="/dashboards/update-profile/:id" element={<UpdateProfileCMSPage />} />
           </Route>
         </Routes>
       </BrowserRouter>

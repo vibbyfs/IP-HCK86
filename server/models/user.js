@@ -62,6 +62,10 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       defaultValue: "-"
     },
+    bio: {
+      type: DataTypes.TEXT,
+      allowNull: true,
+    },
     email: {
       type: DataTypes.STRING,
       allowNull: false,
@@ -105,7 +109,6 @@ module.exports = (sequelize, DataTypes) => {
     modelName: 'User',
   });
   
-  // Only add beforeCreate hook if not in test environment
   if (process.env.NODE_ENV !== 'test') {
     User.beforeCreate((user) => {
       user.password = hashedPassword(user.password)

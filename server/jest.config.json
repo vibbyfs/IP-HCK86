@@ -6,9 +6,8 @@
   "collectCoverage": true,
   "coverageDirectory": "coverage",
   "coverageReporters": [
-    "text",
-    "lcov",
-    "html"
+  "text",
+  "text-summary"
   ],
   "collectCoverageFrom": [
     "controllers/**/*.js"

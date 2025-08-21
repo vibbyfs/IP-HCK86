@@ -8,7 +8,6 @@ class UserController {
             const profile = await User.findByPk(id)
             if (!profile) {
                 throw ({ name: 'NotFound', message: 'Profile not found' })
-
             }
 
             const rawProfile = (profile && typeof profile.toJSON === 'function') ? profile.toJSON() : profile

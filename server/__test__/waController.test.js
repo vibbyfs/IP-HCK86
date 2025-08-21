@@ -409,6 +409,28 @@ describe('WAController', () => {
       expect(String(args[1]).toLowerCase()).toContain('sudah lewat');
     });
 
+    it('should use fallback mentions when parser returns an array of usernames', async () => {
+      const mr = require('../helpers/multiRecipient');
+      const spy = jest.spyOn(mr, 'parseUsernamesFromMessage').mockReturnValue(['budiarray']);
+
+      const u2 = await User.create({ username: 'budiarray', email: 'budiarray@example.com', password: 'password1', phone: '+620000009999' });
+      const { Friend } = require('../models');
+      await Friend.create({ UserId: testUser1.id, FriendId: u2.id, status: 'accepted' });
+
+      const future = require('dayjs')().tz('Asia/Jakarta').add(1, 'hour').format('YYYY-MM-DDTHH:mm:ssZZ');
+      ai.extract.mockResolvedValue({ intent: 'create', title: 'rapat', dueAtWIB: future, timeType: 'absolute', repeat: 'none', isRecurring: false, recipientUsernames: [] });
+
+      await request(app)
+        .post('/api/wa/inbound')
+        .send({ From: `whatsapp:${testUser1.phone}`, Body: 'ingatkan @budiarray rapat' })
+        .expect(200);
+
+      const msg = String(waOutbound.sendMessage.mock.calls[0][1]).toLowerCase();
+      expect(msg).toContain('@budiarray');
+
+      spy.mockRestore();
+    });
+
     it('should list reminders and then stop one by index', async () => {
       await Reminder.create({ UserId: testUser1.id, title: 'r1', dueAt: new Date(Date.now() + 60 * 60 * 1000), status: 'scheduled' });
       await Reminder.create({ UserId: testUser1.id, title: 'r2', dueAt: new Date(Date.now() + 2 * 60 * 60 * 1000), status: 'scheduled' });
@@ -427,6 +449,33 @@ describe('WAController', () => {
 
       const args = waOutbound.sendMessage.mock.calls.pop();
       expect(String(args[1]).toLowerCase()).toContain('berhasil dibatalkan');
+    });
+
+    it('should report both invalid usernames and not-friends in one message', async () => {
+      const { Friend } = require('../models');
+      const u2 = await User.create({ username: 'temanvalid', email: 'temanvalid@example.com', password: 'password1', phone: '+620000001111' });
+      // Do NOT create Friend relation for u2 to simulate "not friend"
+
+      ai.extract.mockResolvedValue({
+        intent: 'create',
+        title: 'sync',
+        dueAtWIB: '2025-12-25T08:00:00+07:00',
+        timeType: 'absolute',
+        repeat: 'none',
+        isRecurring: false,
+        recipientUsernames: ['temanvalid', 'usernametidakada']
+      });
+
+      await request(app)
+        .post('/api/wa/inbound')
+        .send({ From: `whatsapp:${testUser1.phone}`, Body: 'ingatkan @temanvalid @usernametidakada' })
+        .expect(200);
+
+      const msg = String(waOutbound.sendMessage.mock.calls[0][1]);
+      expect(msg).toContain('Username tidak ditemukan');
+      expect(msg).toContain('usernametidakada');
+      expect(msg).toContain('Kamu belum berteman');
+      expect(msg).toContain('temanvalid');
     });
 
     it('should handle sendMessage failure gracefully', async () => {
@@ -692,6 +741,16 @@ describe('WAController', () => {
         .expect(200);
       const msg = String(waOutbound.sendMessage.mock.calls[0][1]);
       expect(msg.toLowerCase()).toContain('mau bikin pengingat');
+    });
+
+    it('should skip repeat-only block when timeType is relative and no dueAt (falls to small talk)', async () => {
+      ai.extract.mockResolvedValue({ intent: 'create', title: 'misc', dueAtWIB: null, timeType: 'relative', repeat: 'daily', isRecurring: true });
+      await request(app)
+        .post('/api/wa/inbound')
+        .send({ From: `whatsapp:${testUser1.phone}`, Body: 'tiap hari' })
+        .expect(200);
+      const msg = String(waOutbound.sendMessage.mock.calls[0][1]).toLowerCase();
+      expect(msg).toContain('mau bikin pengingat');
     });
 
     it('should map repeat weekly on absolute create', async () => {
