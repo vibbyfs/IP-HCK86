@@ -11,7 +11,9 @@ class UserController {
 
             }
 
-            res.status(201).json(profile)
+            const rawProfile = (profile && typeof profile.toJSON === 'function') ? profile.toJSON() : profile
+            const { password, ...profileWithoutPassword } = rawProfile || {}
+            res.status(201).json(profileWithoutPassword)
         } catch (err) {
             console.log("ERROR GET PROFILE", err);
             next(err)
@@ -29,7 +31,8 @@ class UserController {
 
             await user.update(req.body)
 
-            const { password, ...userWithoutPassword } = user.toJSON() ? user.toJSON() : user
+            const rawUser = (user && typeof user.toJSON === 'function') ? user.toJSON() : user
+            const { password, ...userWithoutPassword } = rawUser || {}
 
             res.status(200).json(userWithoutPassword)
         } catch (err) {
