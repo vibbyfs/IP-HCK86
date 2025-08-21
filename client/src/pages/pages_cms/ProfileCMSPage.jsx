@@ -24,7 +24,7 @@ export default function ProfileCMSPage() {
         setProfile(response.data);
       } catch (err) {
         console.log("ERROR FETCH PROFILE", err);
-        showError(err, "Gagal memuat profil");
+        showError(err, "Gagal memuat profil", "profile-fetch-error");
       }
     }
 

@@ -32,7 +32,7 @@ export default function RemindersCMSPage() {
       setRows(response.data);
     } catch (err) {
       console.log("ERROR FETCHING REMINDERS", err);
-      showError(err, "Gagal memuat pengingat");
+      showError(err, "Gagal memuat pengingat", "reminders-fetch-error");
     }
   }
 
@@ -52,7 +52,7 @@ export default function RemindersCMSPage() {
       showSuccess("Reminder dibatalkan");
     } catch (err) {
       console.log("ERROR REMINDER CANCEL", err);
-      showError(err, "Gagal membatalkan reminder");
+      showError(err, "Gagal membatalkan reminder", "reminder-cancel-error");
     }
   }
 
@@ -68,7 +68,7 @@ export default function RemindersCMSPage() {
       showSuccess("Reminder dihapus");
     } catch (err) {
       console.log("ERROR FETCHING REMINDERS DELETE", err);
-      showError(err, "Gagal menghapus reminder");
+      showError(err, "Gagal menghapus reminder", "reminder-delete-error");
     }
   }
 

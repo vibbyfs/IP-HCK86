@@ -39,7 +39,7 @@ export default function FriendsCMSPage() {
       setRows(response.data);
     } catch (err) {
       console.log("ERROR FRIENDS PAGE FETCH", err);
-      showError(err, "Gagal memuat teman");
+      showError(err, "Gagal memuat teman", "friends-fetch-error");
     }
   }
 
@@ -137,7 +137,7 @@ export default function FriendsCMSPage() {
         "ERROR PAGE FRIENNDS HANDLE INVITE",
         err?.response?.data || err?.message || err
       );
-      showError(err, "Gagal mengirim undangan");
+      showError(err, "Gagal mengirim undangan", "friends-invite-error");
     } finally {
       setBusyInvite(false);
     }
@@ -163,7 +163,7 @@ export default function FriendsCMSPage() {
       );
     } catch (err) {
       console.log("ERROR PAGE FRIENNDS HANDLE RESPON", err);
-      showError(err, "Gagal memproses respon undangan");
+      showError(err, "Gagal memproses respon undangan", "friends-respond-error");
     }
   }
 
@@ -179,7 +179,7 @@ export default function FriendsCMSPage() {
       showSuccess("Teman dihapus");
     } catch (err) {
       console.log("ERROR PAGE FRIENDS HANDLE DELETE", err);
-      showError(err, "Gagal menghapus teman");
+      showError(err, "Gagal menghapus teman", "friends-delete-error");
     }
   }
   useEffect(() => {

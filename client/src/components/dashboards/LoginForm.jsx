@@ -19,16 +19,14 @@ export default function LoginForm() {
   async function handleLogin(e) {
     e.preventDefault();
     try {
-      const toastId = showLoading("Masuk... Mengautentikasi");
       const res = await http.post("/auth/login", formData);
 
       localStorage.setItem("access_token", res.data.access_token);
-      dismissToast(toastId);
       showSuccess("Berhasil masuk");
       navigate("/dashboards");
     } catch (err) {
       console.log("ERROR SUBMIT LOGIN", err);
-      showError(err, "Gagal masuk. Periksa email dan password Anda.");
+      showError(err, "Gagal masuk. Periksa email dan password Anda.", "login-error");
     }
   }
 
@@ -36,7 +34,6 @@ export default function LoginForm() {
     console.log("Encoded JWT ID token: " + response.credential);
 
     try {
-      const toastId = showLoading("Masuk dengan Google...");
       const res = await http.post("/auth/login-google", {
         id_token: response.credential,
       });
@@ -45,25 +42,56 @@ export default function LoginForm() {
       if (res.data.user) {
         localStorage.setItem("UserId", res.data.user.id);
       }
-      dismissToast(toastId);
       showSuccess("Masuk dengan Google berhasil");
       navigate("/dashboards/profile");
     } catch (err) {
       console.log("ERROR LOGIN WITH GOOGLE", err);
-      showError(err, "Gagal login dengan Google");
+      showError(err, "Gagal login dengan Google", "login-error");
     }
   }
 
   useEffect(() => {
-    google.accounts.id.initialize({
-      client_id: import.meta.env.VITE_GOOGLE_CLIENT_ID,
-      callback: handleCredentialResponse,
-    });
-    google.accounts.id.renderButton(document.getElementById("buttonDiv"), {
-      theme: "outline",
-      size: "large",
-    });
-    // google.accounts.id.prompt();
+    const initializeGoogleSignIn = () => {
+      // Check if Google Identity Services is available
+      if (typeof window !== "undefined" && window.google?.accounts?.id) {
+        try {
+          window.google.accounts.id.initialize({
+            client_id: import.meta.env.VITE_GOOGLE_CLIENT_ID,
+            callback: handleCredentialResponse,
+          });
+
+          const buttonDiv = document.getElementById("buttonDiv");
+          if (buttonDiv) {
+            window.google.accounts.id.renderButton(buttonDiv, {
+              theme: "outline",
+              size: "large",
+            });
+          }
+
+          // Optional: Show the One Tap prompt
+          // window.google.accounts.id.prompt();
+        } catch (error) {
+          console.error("Error initializing Google Sign-In:", error);
+        }
+      }
+    };
+
+    // Try to initialize immediately if Google is already loaded
+    if (window.gsiLoaded || window.google?.accounts?.id) {
+      initializeGoogleSignIn();
+    } else {
+      // Wait for the Google script to load
+      const handleGsiReady = () => {
+        initializeGoogleSignIn();
+      };
+
+      window.addEventListener("gsi-ready", handleGsiReady, { once: true });
+
+      // Cleanup function
+      return () => {
+        window.removeEventListener("gsi-ready", handleGsiReady);
+      };
+    }
   }, []);
 
   return (

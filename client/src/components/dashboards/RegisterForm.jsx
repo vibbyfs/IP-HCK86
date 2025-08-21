@@ -6,10 +6,9 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router";
 import http from "../../lib/http";
 import {
-  showLoading,
-  dismissToast,
   showSuccess,
   showError,
+  dismissToast,
 } from "../../utils/toastNotifications";
 
 export default function RegisterForm() {
@@ -29,14 +28,12 @@ export default function RegisterForm() {
   async function handleRegister(e) {
     e.preventDefault();
     try {
-      const toastId = showLoading("Mendaftarkan akun...");
       await http.post("/auth/register", formData);
-      dismissToast(toastId);
       showSuccess("Pendaftaran berhasil. Silakan masuk.");
       navigate("/login");
     } catch (err) {
       console.log("ERROR SUBMIT REGISTER", err);
-      showError(err, "Gagal mendaftar. Periksa data Anda.");
+      showError(err, "Gagal mendaftar. Periksa data Anda.", "register-error");
     }
   }
 
@@ -59,7 +56,6 @@ export default function RegisterForm() {
               type="text"
               placeholder="mis. emily"
               autoComplete="username"
-              required
               value={formData.username}
               onChange={handleChange}
             />
@@ -73,7 +69,6 @@ export default function RegisterForm() {
               inputMode="tel"
               placeholder="mis. +62812xxxxxxx"
               autoComplete="tel"
-              required
               value={formData.phone}
               onChange={handleChange}
             />
@@ -87,7 +82,6 @@ export default function RegisterForm() {
             type="email"
             placeholder="mis. emily@example.com"
             autoComplete="email"
-            required
             value={formData.email}
             onChange={handleChange}
           />
@@ -100,7 +94,6 @@ export default function RegisterForm() {
             type="password"
             placeholder="••••••••"
             autoComplete="new-password"
-            required
             value={formData.password}
             onChange={handleChange}
           />
