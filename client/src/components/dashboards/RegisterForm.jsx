@@ -5,7 +5,12 @@ import { cn } from "../../lib/cn";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router";
 import http from "../../lib/http";
-import { showLoading, dismissToast, showSuccess, showError } from "../../utils/toastNotifications";
+import {
+  showLoading,
+  dismissToast,
+  showSuccess,
+  showError,
+} from "../../utils/toastNotifications";
 
 export default function RegisterForm() {
   const navigate = useNavigate();
@@ -24,14 +29,14 @@ export default function RegisterForm() {
   async function handleRegister(e) {
     e.preventDefault();
     try {
-  const toastId = showLoading("Mendaftarkan akun...");
-  await http.post("/auth/register", formData);
-  dismissToast(toastId);
-  showSuccess("Pendaftaran berhasil. Silakan masuk.");
-  navigate("/");
+      const toastId = showLoading("Mendaftarkan akun...");
+      await http.post("/auth/register", formData);
+      dismissToast(toastId);
+      showSuccess("Pendaftaran berhasil. Silakan masuk.");
+      navigate("/login");
     } catch (err) {
-  console.log("ERROR SUBMIT REGISTER", err);
-  showError(err, "Gagal mendaftar. Periksa data Anda.");
+      console.log("ERROR SUBMIT REGISTER", err);
+      showError(err, "Gagal mendaftar. Periksa data Anda.");
     }
   }
 

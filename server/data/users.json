@@ -31,9 +31,9 @@
   },
   {
     "id": 4,
-    "username": "syukur",
+    "username": "abdul",
     "phone": "+6281290876968",
-    "email": "syukur@mail.com",
+    "email": "abdul@mail.com",
     "password": "password",
     "timezone": "Asia/Jakarta",
     "createdAt": "2025-08-09T14:05:00Z",
@@ -64,6 +64,16 @@
     "username": "haritzh",
     "phone": "+6285694881267",
     "email": "haritzh@mail.com",
+    "password": "password",
+    "timezone": "Asia/Jakarta",
+    "createdAt": "2025-08-09T14:05:00Z",
+    "updatedAt": "2025-08-09T14:05:00Z"
+  },
+  {
+    "id": 8,
+    "username": "neubri",
+    "phone": "+6285156306314",
+    "email": "neubri@mail.com",
     "password": "password",
     "timezone": "Asia/Jakarta",
     "createdAt": "2025-08-09T14:05:00Z",

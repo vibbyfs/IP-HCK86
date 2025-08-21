@@ -47,7 +47,7 @@ export default function LoginForm() {
       }
       dismissToast(toastId);
       showSuccess("Masuk dengan Google berhasil");
-      navigate("/dashboards/profiles");
+      navigate("/dashboards/profile");
     } catch (err) {
       console.log("ERROR LOGIN WITH GOOGLE", err);
       showError(err, "Gagal login dengan Google");
