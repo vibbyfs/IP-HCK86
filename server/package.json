@@ -11,6 +11,7 @@
     "test:coverage": "jest --coverage"
   },
   "dependencies": {
+    "@reduxjs/toolkit": "^2.8.2",
     "axios": "^1.11.0",
     "bcryptjs": "^3.0.2",
     "cors": "^2.8.5",
@@ -22,6 +23,7 @@
     "node-schedule": "^2.1.1",
     "openai": "^5.12.2",
     "pg": "^8.16.3",
+    "react-redux": "^9.2.0",
     "sequelize": "^6.37.7",
     "twilio": "^5.8.0",
     "zod": "^3.25.76"

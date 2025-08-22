@@ -2,20 +2,30 @@ import { IconDeviceFloppy, IconMail, IconPhone } from "@tabler/icons-react";
 import { useState } from "react";
 import { showError, showSuccess } from "../../utils/toastNotifications";
 import http from "../../lib/http";
-import { data, useNavigate, useParams } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  fetchProfile,
+  selectProfile,
+  selectProfileStatus,
+  setProfile,
+} from "../../features/profile/profileSlice";
 
 export default function ProfileForm() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [formData, setForm] = useState({
     username: "",
     email: "",
     phone: "",
     bio: "",
   });
-
   const [submitting, setSubmitting] = useState(false);
+
+  const profile = useSelector(selectProfile);
+  const profileStatus = useSelector(selectProfileStatus);
 
   async function handleUpdateProfile(e) {
     e.preventDefault();
@@ -30,6 +40,9 @@ export default function ProfileForm() {
         },
       });
 
+      // Sync redux store so other pages reflect latest profile
+      dispatch(setProfile({ ...(profile || {}), ...formData }));
+
       showSuccess("Profil berhasil diperbarui", "profile-save-toast");
       navigate("/dashboards/profile");
     } catch (err) {
@@ -41,30 +54,28 @@ export default function ProfileForm() {
   }
 
   useEffect(() => {
-    async function fetchProfile() {
-      try {
-        const response = await http.get("/users/profile", {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("access_token")}`,
-          },
+    if (!profile && profileStatus === "idle") {
+      dispatch(fetchProfile())
+        .unwrap()
+        .catch((err) => {
+          // Ignore conditional aborts (another fetch already in-flight)
+          if (err?.name === "ConditionError") return;
+          console.log("ERROR FETCH PROFILE", err);
+          showError(err, "Gagal memuat profil", "profile-fetch-error");
         });
-
-        const dataUser = response.data;
-
-        setForm({
-          username: dataUser.username,
-          email: dataUser.email,
-          phone: dataUser.phone,
-          bio: dataUser.bio,
-        });
-      } catch (err) {
-        console.log("ERROR FETCH PROFILE", err);
-        showError(err, "Gagal memuat profil", "profile-fetch-error");
-      }
     }
+  }, [dispatch, profile, profileStatus]);
 
-    fetchProfile();
-  }, []);
+  useEffect(() => {
+    if (profile) {
+      setForm({
+        username: profile.username || "",
+        email: profile.email || "",
+        phone: profile.phone || "",
+        bio: profile.bio || "",
+      });
+    }
+  }, [profile]);
 
   return (
     <>

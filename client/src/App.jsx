@@ -12,6 +12,8 @@ import DashboardCMSPage from "./pages/pages_cms/DashboardCMSPage";
 import UpdateProfileCMSPage from "./pages/pages_cms/UpdateProfileCMSPage";
 import { NavbarSection } from "./components/publics/NavbarSection";
 import { Toaster } from "react-hot-toast";
+import { store } from "../store";
+import { Provider } from "react-redux";
 
 function MainLayout() {
   return (
@@ -40,26 +42,31 @@ function DashboardLayout() {
 function App() {
   return (
     <>
-      <BrowserRouter>
-        <Toaster position="top-right" />
-        <Routes>
-          <Route path="/" element={<LandingPage />} />
-          <Route element={<MainLayout />}>
-            <Route path="/register" element={<RegisterPage />} />
-            <Route path="/login" element={<LoginPage />} />
-          </Route>
-          <Route element={<DashboardLayout />}>
-            <Route path="/dashboards" element={<DashboardCMSPage />} />
-            <Route
-              path="/dashboards/reminders"
-              element={<RemindersCMSPage />}
-            />
-            <Route path="/dashboards/friends" element={<FriendsCMSPage />} />
-            <Route path="/dashboards/profile" element={<ProfileCMSPage />} />
-            <Route path="/dashboards/update-profile/:id" element={<UpdateProfileCMSPage />} />
-          </Route>
-        </Routes>
-      </BrowserRouter>
+      <Provider store={store}>
+        <BrowserRouter>
+          <Toaster position="top-right" />
+          <Routes>
+            <Route path="/" element={<LandingPage />} />
+            <Route element={<MainLayout />}>
+              <Route path="/register" element={<RegisterPage />} />
+              <Route path="/login" element={<LoginPage />} />
+            </Route>
+            <Route element={<DashboardLayout />}>
+              <Route path="/dashboards" element={<DashboardCMSPage />} />
+              <Route
+                path="/dashboards/reminders"
+                element={<RemindersCMSPage />}
+              />
+              <Route path="/dashboards/friends" element={<FriendsCMSPage />} />
+              <Route path="/dashboards/profile" element={<ProfileCMSPage />} />
+              <Route
+                path="/dashboards/update-profile/:id"
+                element={<UpdateProfileCMSPage />}
+              />
+            </Route>
+          </Routes>
+        </BrowserRouter>
+      </Provider>
     </>
   );
 }
